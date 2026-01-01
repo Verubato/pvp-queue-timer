@@ -4,6 +4,7 @@ local dbDefaults = {
 	RelativePoint = "TOP",
 	X = 0,
 	Y = -80,
+	Format = "%02d:%02d",
 }
 local fontPath = "Fonts\\FRIZQT__.TTF"
 local fontSize = 18
@@ -54,7 +55,8 @@ local function FormatTime(seconds)
 	local m = math.floor(seconds / 60)
 	local s = seconds % 60
 
-	return string.format("%02d:%02d", m, s)
+	local db = PvPQueueTimerDB
+	return string.format(db.Format or "%02d:%02d", m, s)
 end
 
 local function IsInPvPInstance()
