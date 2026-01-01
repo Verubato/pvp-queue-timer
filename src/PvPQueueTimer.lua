@@ -53,7 +53,13 @@ local function FormatTime(seconds)
 
 	local m = math.floor(seconds / 60)
 	local s = seconds % 60
+
 	return string.format("%02d:%02d", m, s)
+end
+
+local function IsInPvPInstance()
+	local inInstance, instanceType = IsInInstance()
+	return inInstance and (instanceType == "pvp" or instanceType == "arena")
 end
 
 local function GetLongestPvPQueueElapsedSeconds()
@@ -79,6 +85,12 @@ local function GetLongestPvPQueueElapsedSeconds()
 end
 
 local function UpdateDisplay()
+	if IsInPvPInstance() then
+		text:SetText("")
+		text:Hide()
+		return
+	end
+
 	local secs = GetLongestPvPQueueElapsedSeconds()
 	if secs then
 		text:SetText("Time in Queue: " .. FormatTime(secs))
@@ -128,6 +140,10 @@ frame:SetScript("OnEvent", function(_, event)
 end)
 
 frame:SetScript("OnUpdate", function(_, delta)
+	if IsInPvPInstance() then
+		return
+	end
+
 	elapsedSinceUpdate = elapsedSinceUpdate + delta
 
 	if elapsedSinceUpdate >= updateInterval then
